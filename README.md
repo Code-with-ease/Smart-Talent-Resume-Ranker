@@ -21,6 +21,7 @@ Please refer the file in paper folder to se the relative research paper in the f
 
 ### Akshara Nigam(@aksharanigam1112)
 
-| S.no. | Filename | Title | Link | Year | Type |
-| ----- | -------- | ----- | ---- | ---- | ---- |
-|       |          |       |      |      |      |
+| S.no. | Dataset Link |
+| ----- | -------- | 
+|   1   |https://www.kaggle.com/avanisiddhapura27/resume-dataset| 
+|   2   |https://www.kaggle.com/dhainjeamita/resumedataset|
