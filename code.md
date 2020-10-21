@@ -4,3 +4,4 @@
 |2|https://github.com/binoydutt/Resume-Job-Description-Matching|
 |3|https://github.com/blakeboswell/nlp-resume|
 |4|https://www.kaggle.com/vingkan/vinesh-resume-classifier |Classifying given dataset if it gets accepted/rejected based on skills | 
+|5|https://www.kaggle.com/maneeshdisodia/employment-skills| Dataset of all the Employment Skills |
