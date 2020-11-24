@@ -5,6 +5,7 @@ import numpy as np
 import unidecode
 import json
 import os
+import shutil
 from resume_classification import *
 from database_functionalities import *
 
@@ -89,10 +90,11 @@ def read_skills_dataset():
 
 def get_all_file_skills_and_insert(skills_list):
     json_list=[]
-    cvs_folder = 'CVs/'
-    entries = os.listdir(cvs_folder)
-    for i in range(1,21):
-        resume = convert(cvs_folder+entries[i-1]).decode('utf-8')
+    new_cvs_folder = 'test_cvs/'
+    resume_in_db = 'resumes_in_db/'
+    entries = os.listdir(new_cvs_folder)
+    for i in range(0,len(entries)):
+        resume = convert(new_cvs_folder+entries[i]).decode('utf-8')
         data = resume
         data = data.replace(',',' ,')
         data = data.replace('. ',' . ')
@@ -106,8 +108,9 @@ def get_all_file_skills_and_insert(skills_list):
             "filename":entries[i],
             "category":categories
         }
-        # connect = connect_db()
-        # d["_id"] = (str)insert_resume(connect,d)
+        connect = connect_db()
+        d["_id"] = str(insert_resume(connect,d))
+        os.rename(new_cvs_folder+entries[i], resume_in_db+entries[i])
         json_list.append(d)
     return json_list
 

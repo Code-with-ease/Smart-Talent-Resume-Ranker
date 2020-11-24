@@ -28,8 +28,16 @@ def find_jd_by_details(client,details):
   jd_collection = db.jobs
   # ObjectId id = new ObjectId();
   # details['_id'] = ObjectId()
-  jd_id = jd_collection.find(details)
-  return jd_id
+  jd = jd_collection.find_one(details)
+  return jd
+
+def find_jds_by_details(client,details):
+  db = client["Resume-parser"]
+  jd_collection = db.jobs
+  # ObjectId id = new ObjectId();
+  # details['_id'] = ObjectId()
+  jds = jd_collection.find(details)
+  return jds
 
 def find_resume_by_details(client,details):
   db = client["Resume-parser"]
@@ -37,7 +45,7 @@ def find_resume_by_details(client,details):
   details = resume_collection.find_one(details)
   return details
 
-def find_resume_by_skill(client,required_skill=[],one_of_skill=[]):
+def find_resumes_by_skill(client,required_skill=[],one_of_skill=[]):
   db = client["Resume-parser"]
   resume_collection = db.resumes
   if(len(required_skill)!=0 and len(one_of_skill)!=0):
