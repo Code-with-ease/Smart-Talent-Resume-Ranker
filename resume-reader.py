@@ -115,15 +115,30 @@ def get_all_file_skills_and_insert(skills_list):
     return json_list
 
 
-
+def parseSingleResume(name,skill_list,insert=1):
+    folder="./cv/"+name
+    resume = convert(folder).decode('utf-8')
+    data = resume
+    data = data.replace(',', ' ,')
+    data = data.replace('. ', ' . ')
+    resume_text = data.split('\n')
+    skills = list(getSkills(resume_text, skills_list))
+    categories = list(get_category(skills))
+    d = {
+        "skills": skills,
+        "filename": name,
+        "category": categories
+    }
+    connect = connect_db()
+    print(d)
 
 # resume = convert('CVs/c2.pdf').decode('utf-8')
 
 if __name__ == "__main__":
     skills_list = read_skills_dataset()
-    json_list = get_all_file_skills_and_insert(skills_list)
-
-    for ob in json_list:
-        json_string = json.dumps(ob)
-        print(json_string)
+    # json_list = get_all_file_skills_and_insert(skills_list)
+    parseSingleResume("17103172_rishi_singhal_id_dp(1) - Rishi Singhal.pdf",skills_list,0)
+    # for ob in json_list:
+    #     json_string = json.dumps(ob)
+    #     print(json_string)
     # print(skills)
