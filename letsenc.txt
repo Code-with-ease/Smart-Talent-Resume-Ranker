@@ -1,0 +1,21 @@
+﻿Location: Irving, TX
+Description: Our client is currently seeking a Data Scientist 
+
+This job will have the following responsibilities: 
+    • Design, develop, test, validate, and deploy Predictive Analytics/Machine Learning (ML) /Statistical models as part of new product development and/or projects.  
+    • Work with stakeholders to identify the business requirements and the expected outcome  
+    • Collaborate with subject matter experts to select the relevant sources of information and perform necessary data cleansing and ETL  
+    • Work closely with senior data scientists and engineers to deploy models to production both in batch and real-time.  
+    • Build data sets from multiple data sources and write data flows using Python and R, SQL/Spark.  
+    • Use data visualization tools (e.g., Tableau, Kibana, Zeppelin) to share ongoing insights.  
+    • Present findings to technical audiences.
+
+Qualifications & Requirements: 
+    • 1-2 years of industry experience in Data Science/Machine Learning developing, testing, validating, and/or deploying ML models with business impact  
+    • 1-2 year’s hands-on, industry experience with big data and programming languages such as e.g. Python, R, Scala  
+    • 1-2 years’ experience in data analysis using databases languages (e.g. SQL and Hive)  
+    • Experience identifying data quality issues and working with data engineer to resolve issues
+
+Contact: [ Link removed ] - Click here to apply to Data Scientist
+This job and many more are available through The Judge Group. Find us on the web at [ Link removed ] - Click here to apply to Data Scientist 
+

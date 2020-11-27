@@ -137,7 +137,7 @@ def parseSingleResume(name,skill_list,insert=1):
 if __name__ == "__main__":
     skills_list = read_skills_dataset()
     # json_list = get_all_file_skills_and_insert(skills_list)
-    parseSingleResume("17103172_rishi_singhal_id_dp(1) - Rishi Singhal.pdf",skills_list,0)
+    parseSingleResume("temp.pdf",skills_list,0)
     # for ob in json_list:
     #     json_string = json.dumps(ob)
     #     print(json_string)
