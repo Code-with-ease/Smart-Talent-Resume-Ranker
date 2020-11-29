@@ -1,5 +1,6 @@
 import textract
 import re
+
 import pandas as pd
 from pymongo import MongoClient
 from bson.objectid import ObjectId
@@ -41,7 +42,7 @@ def getSkills(resume_content,skills_list):
     return list(set(skills))
 
 def read_skills_dataset():
-    df = pd.read_csv("skill_set.csv")
+    df = pd.read_csv("./Datasets/new_skills.csv")
     skills_list = list(df["skills"].values)
     skills_list_lower=[]
     for i in skills_list:
@@ -81,6 +82,7 @@ def getDescription(jd_arr):
     return ans
 
 
+
 def getInfo(jd_arr):
     data={}
     data["company_name"]=getCompanyName(jd_arr)
@@ -98,7 +100,7 @@ def insertJdIntoDb(data):
 
 
 def parseJd(filename,insert=1):
-    text = convert("./JD's/"+filename).decode('utf-8')
+    text = convert("./JD/"+filename).decode('utf-8')
     jd_arr = re.split(r'[\n\r]{2,}', text)
     data=getInfo(jd_arr)
     data["filename"]=filename
@@ -106,7 +108,7 @@ def parseJd(filename,insert=1):
     if(insert):
         insertJdIntoDb(data)
 
-parseJd("jd01.pdf")
+parseJd("jd01.pdf",1)
 
 
 

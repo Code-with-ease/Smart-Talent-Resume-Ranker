@@ -1,21 +1,18 @@
 import textract
 import re
-import pandas as pd
-import numpy as np
-import unidecode
-import json
 import os
-import shutil
 from resume_classification import *
 from database_functionalities import *
 
+
+client=connect_db()
 def convert(fname, pages=None):
 	text = textract.process(fname, method='pdfminer')
 	return text
 
 def getName(resume_content):
     name=""
-    for st in resume_string:
+    for st in resume_content:
         if(st!='' and st.lower()!='resume' and st.lower()!='cv' and st.lower()!='resume/cv' and name==""):
             name = st
             break
@@ -81,12 +78,14 @@ def getSkills(resume_content,skills_list):
 
 
 def read_skills_dataset():
-    df = pd.read_csv("skill_set.csv")
+    df = pd.read_csv("./Datasets/new_skills.csv")
     skills_list = list(df["skills"].values)
     skills_list_lower=[]
     for i in skills_list:
         skills_list_lower.append(str(i).lower())
     return skills_list_lower
+
+
 
 def get_all_file_skills_and_insert(skills_list):
     json_list=[]
@@ -100,7 +99,7 @@ def get_all_file_skills_and_insert(skills_list):
         data = data.replace('. ',' . ')
         resume_text = data.split('\n')
         skills = list(getSkills(resume_text,skills_list))
-        categories = list(get_category(skills))
+        categories = list(getClassification(skills))
         print(i,skills,categories)
         # skills = list(skills)
         d = {
@@ -108,36 +107,35 @@ def get_all_file_skills_and_insert(skills_list):
             "filename":entries[i],
             "category":categories
         }
-        connect = connect_db()
-        d["_id"] = str(insert_resume(connect,d))
+        d["_id"] = str(insert_resume(client,d))
         os.rename(new_cvs_folder+entries[i], resume_in_db+entries[i])
         json_list.append(d)
     return json_list
 
 
-def parseSingleResume(name,skill_list,insert=1):
-    folder="./cv/"+name
+def parseSingleResume(name,skills_list,insert=1):
+    folder="./CV/"+name
     resume = convert(folder).decode('utf-8')
     data = resume
     data = data.replace(',', ' ,')
     data = data.replace('. ', ' . ')
     resume_text = data.split('\n')
     skills = list(getSkills(resume_text, skills_list))
-    categories = list(get_category(skills))
+    categories = list(getClassification(skills))
     d = {
         "skills": skills,
         "filename": name,
         "category": categories
     }
-    connect = connect_db()
-    print(d)
+    if(insert):
+        insert_resume(client,d)
 
 # resume = convert('CVs/c2.pdf').decode('utf-8')
 
 if __name__ == "__main__":
     skills_list = read_skills_dataset()
     # json_list = get_all_file_skills_and_insert(skills_list)
-    parseSingleResume("temp.pdf",skills_list,0)
+    parseSingleResume("17104011_Kapil_Kumar_Israni.pdf",skills_list,1)
     # for ob in json_list:
     #     json_string = json.dumps(ob)
     #     print(json_string)

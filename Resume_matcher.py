@@ -1,7 +1,6 @@
 from pymongo import MongoClient
-import dns
-from bson.objectid import ObjectId
-from sklearn.metrics.pairwise import cosine_similarity
+
+import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 
 def connect_db():
@@ -9,6 +8,52 @@ def connect_db():
   return client
 
 client=connect_db()
+
+
+import numpy as np
+
+def levenshtein(seq1, seq2):
+    size_x = len(seq1) + 1
+    size_y = len(seq2) + 1
+    matrix = np.zeros ((size_x, size_y))
+    for x in range(0,size_x):
+        matrix [x, 0] = x
+    for y in range(0,size_y):
+        matrix [0, y] = y
+
+    for x in range(1, size_x):
+        for y in range(1, size_y):
+            if seq1[x-1] == seq2[y-1]:
+                matrix [x,y] = min(
+                    matrix[x-1, y] + 1,
+                    matrix[x-1, y-1],
+                    matrix[x, y-1] + 1
+                )
+            else:
+                matrix [x,y] = min(
+                    matrix[x-1,y] + 1,
+                    matrix[x-1,y-1] + 1,
+                    matrix[x,y-1] + 1
+                )
+    return (matrix[size_x - 1, size_y - 1])
+
+def getLowerDatasetCategory():
+    data=pd.read_csv("./Datasets/category.csv")
+    return data["category"].tolist().lower()
+
+def getLevenstien(category,word):
+    word=word.lower().replace(" ","")
+    min=9999999
+    word_min_dist=""
+    for cat in category:
+
+        dist=levenshtein(cat["lowerCategory"],word)
+        if(dist<min):
+            min=dist
+            word_min_dist=cat["category"]
+
+    return word_min_dist
+
 
 
 def getScore(resume_arr,jd_arr):
@@ -39,8 +84,24 @@ def getSimmilarity(resume_skills,jd_skills,vectorizer1):
     return getScore(resume_arr.toarray()[0], jd_arr.toarray()[0])
 
 
+def getTotalCategoryCleaned():
+    data = pd.read_csv("./Datasets/category.csv")
+    category = data["category"].tolist()
+    cat = []
+
+    for i in category:
+        temp=i.replace("Jobs","Profile")
+        i = i.replace(" ", "").lower().replace("jobs", "profile")
+        cat.append({"category":temp,"lowerCategory":i})
+
+    return cat
+
+
 def getMatchingResumes(jd,vectorizer1):
-    resumes=getResumesWithCategory(jd["category"])
+    categories = getTotalCategoryCleaned()
+    levenshtein_category=getLevenstien(categories,jd["category"])
+    print(jd["category"],levenshtein_category)
+    resumes=getResumesWithCategory(levenshtein_category)
     data=[]
     for resume in resumes:
         ans=getSimmilarity(resume['skills'],jd['skills'],vectorizer1)
@@ -57,5 +118,10 @@ def getResumeRanking(jd_name):
     getMatchingResumes(jd,vectorizer)
 
 
-
 getResumeRanking("jd01.pdf")
+
+
+
+
+
+
