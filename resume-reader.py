@@ -87,56 +87,43 @@ def read_skills_dataset():
 
 
 
-def get_all_file_skills_and_insert(skills_list):
-    json_list=[]
-    new_cvs_folder = 'test_cvs/'
-    resume_in_db = 'resumes_in_db/'
-    entries = os.listdir(new_cvs_folder)
-    for i in range(0,len(entries)):
-        resume = convert(new_cvs_folder+entries[i]).decode('utf-8')
-        data = resume
-        data = data.replace(',',' ,')
-        data = data.replace('. ',' . ')
-        resume_text = data.split('\n')
-        skills = list(getSkills(resume_text,skills_list))
-        categories = list(getClassification(skills))
-        print(i,skills,categories)
-        # skills = list(skills)
-        d = {
-            "skills":skills,
-            "filename":entries[i],
-            "category":categories
-        }
-        d["_id"] = str(insert_resume(client,d))
-        os.rename(new_cvs_folder+entries[i], resume_in_db+entries[i])
-        json_list.append(d)
-    return json_list
-
-
 def parseSingleResume(name,skills_list,insert=1):
     folder="./CV/"+name
     resume = convert(folder).decode('utf-8')
     data = resume
     data = data.replace(',', ' ,')
-    data = data.replace('. ', ' . ')
+    data = data.replace('. ', ' . ').lower()
     resume_text = data.split('\n')
     skills = list(getSkills(resume_text, skills_list))
     categories = list(getClassification(skills))
+    email=getEmail(resume_text)
+    phone=getPhoneNumber(resume_text)
     d = {
         "skills": skills,
         "filename": name,
-        "category": categories
+        "category": categories,
+        "email":email,
+        "contact":phone
     }
+    print(getEmail(resume_text),getPhoneNumber(resume_text))
+    print(d)
     if(insert):
         insert_resume(client,d)
+
+
+def get_all_file_skills_and_insert(skills_list):
+    new_cvs_folder = 'CV/'
+    entries = os.listdir(new_cvs_folder)
+    for i in range(0,len(entries)):
+        print("Parsing and inserting ... ",entries[i])
+        try:
+            parseSingleResume(entries[i],skills_list,1)
+        except:
+            print("error in ",entries[i])
 
 # resume = convert('CVs/c2.pdf').decode('utf-8')
 
 if __name__ == "__main__":
     skills_list = read_skills_dataset()
-    # json_list = get_all_file_skills_and_insert(skills_list)
-    parseSingleResume("17104011_Kapil_Kumar_Israni.pdf",skills_list,1)
-    # for ob in json_list:
-    #     json_string = json.dumps(ob)
-    #     print(json_string)
-    # print(skills)
+    # parseSingleResume("Harshit Singhal 17103300 - Harshit Singhal.pdf",skills_list,1)
+    get_all_file_skills_and_insert(skills_list)

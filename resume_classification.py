@@ -118,7 +118,6 @@ def getClassification(skills):
     for i in range(0,3):
         print(i,Cat[ind[0][i]])
         cat_list.append(Cat[ind[0][i]].replace("Jobs","Profile"))
-
     print(dictEncodedCat[ans[0]])
     cat_list.append(dictEncodedCat[ans[0]].replace("Jobs","Profile"))
     return list(set(cat_list))

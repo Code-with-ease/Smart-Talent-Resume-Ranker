@@ -1,7 +1,8 @@
 from pymongo import MongoClient
-
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
+from operator import itemgetter
+import tabulate
 
 def connect_db():
   client = MongoClient('mongodb+srv://admin:admin@cluster0.ekv0t.mongodb.net/Resume-parser?retryWrites=true&w=majority')
@@ -11,6 +12,7 @@ client=connect_db()
 
 
 import numpy as np
+
 
 def levenshtein(seq1, seq2):
     size_x = len(seq1) + 1
@@ -97,7 +99,16 @@ def getTotalCategoryCleaned():
     return cat
 
 
-def getMatchingResumes(jd,vectorizer1):
+def printScoreBoard(resumes):
+    if(len(resumes)):
+        header = resumes[0].keys()
+        rows = [x.values() for x in resumes]
+        print(tabulate.tabulate(rows, header, tablefmt='grid'))
+    else:
+        print("NO Resume found")
+
+
+def getMatchingResumes(jd,vectorizer1,thresh=0.3):
     categories = getTotalCategoryCleaned()
     levenshtein_category=getLevenstien(categories,jd["category"])
     print(jd["category"],levenshtein_category)
@@ -105,8 +116,10 @@ def getMatchingResumes(jd,vectorizer1):
     data=[]
     for resume in resumes:
         ans=getSimmilarity(resume['skills'],jd['skills'],vectorizer1)
-        data.append({"name":resume["filename"],"match":ans})
-    print(data)
+        if(ans>=thresh):
+            data.append({"name":resume["filename"],"email":resume["email"],"contact":resume["contact"],"match":ans})
+    sortedReumes = sorted(data, key=itemgetter('match'), reverse=True)
+    printScoreBoard(sortedReumes)
 
 
 def getResumeRanking(jd_name):
