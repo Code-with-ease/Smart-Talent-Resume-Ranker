@@ -20,7 +20,8 @@ def getName(resume_content):
 
 def getEmail(resume_content):
     email = ""
-    regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$'
+    regex = """(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])"""
+    # regex = '^[a-z0-9]+[\._]?[a-z0-9]+[@]\w+[.]\w+$'
     for st in resume_content:
         words = st.split(' ')
         for word in words:
@@ -41,7 +42,7 @@ def getLocation(resume_content,cities):
 
 def getPhoneNumber(resume_content):
     phone = ""
-    regex = '^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$'
+    regex = """^(?:(?:\+|0{0,2})91(\s*[\-]\s*)?|[0]?)?[789]\d{9}$"""
     for st in resume_content:
         words = st.split(' ')
         for word in words:
@@ -90,6 +91,8 @@ def read_skills_dataset():
 def parseSingleResume(name,skills_list,insert=1):
     folder="./CV/"+name
     resume = convert(folder).decode('utf-8')
+    resume = resume.replace(u'\xa0',u'')
+    resume = resume.replace(u'\u200b',u'')
     data = resume
     data = data.replace(',', ' ,')
     data = data.replace('. ', ' . ').lower()
@@ -107,7 +110,7 @@ def parseSingleResume(name,skills_list,insert=1):
     }
     print(getEmail(resume_text),getPhoneNumber(resume_text))
     print(d)
-    if(insert):
+    if(insert and d["contact"]!="" and d["contact"]!=""):
         insert_resume(client,d)
 
 
@@ -115,6 +118,7 @@ def get_all_file_skills_and_insert(skills_list):
     new_cvs_folder = 'CV/'
     entries = os.listdir(new_cvs_folder)
     for i in range(0,len(entries)):
+        print(i)
         print("Parsing and inserting ... ",entries[i])
         try:
             parseSingleResume(entries[i],skills_list,1)
@@ -125,5 +129,5 @@ def get_all_file_skills_and_insert(skills_list):
 
 if __name__ == "__main__":
     skills_list = read_skills_dataset()
-    # parseSingleResume("Harshit Singhal 17103300 - Harshit Singhal.pdf",skills_list,1)
+    # parseSingleResume("AshishSingh17103205 - Ashish Singh.pdf",skills_list,1)
     get_all_file_skills_and_insert(skills_list)
