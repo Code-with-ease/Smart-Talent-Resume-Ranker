@@ -77,7 +77,8 @@ def getDescription(jd_arr):
     for elem in jd_arr:
         arr = elem.split(":")
         if (len(arr) and arr[0].strip().lower() == "description"):
-            ans= arr[1].strip()
+            for i in range(1,len(arr)):
+                ans=ans+arr[i].strip()+" "
             break
     return ans
 
@@ -88,9 +89,10 @@ def getInfo(jd_arr):
     data["company_name"]=getCompanyName(jd_arr)
     data["category"] = getCategory(jd_arr)
     description = getDescription(jd_arr)
-    print(description)
     skills_list = read_skills_dataset()
-    skills_list = getSkills(description.split(" "),skills_list)
+    description=description.split("\n")
+    print("Description : ",description)
+    skills_list = getSkills(description,skills_list)
     data["skills"]=skills_list
     return data
 
@@ -108,10 +110,7 @@ def parseJd(filename,insert=1):
     if(insert):
         insertJdIntoDb(data)
 
-parseJd("jd01.pdf",1)
-
-
-
+parseJd("jd02.pdf",1)
 
 
 

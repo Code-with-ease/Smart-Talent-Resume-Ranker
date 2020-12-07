@@ -131,7 +131,7 @@ def getResumeRanking(jd_name):
     getMatchingResumes(jd,vectorizer)
 
 
-getResumeRanking("jd01.pdf")
+getResumeRanking("jd02.pdf")
 
 
 
