@@ -3,47 +3,76 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.neighbors import KNeighborsClassifier
 import joblib
+import sys
 
 
 def getVectorizer(skills):
-    skillsSet=[]
-    for skill in skills:
-        skill=skill.replace(" ","")
-        skillsSet.append(skill)
-    vectorizer = CountVectorizer(tokenizer=lambda txt: txt.split())
-    vocabulary = vectorizer.fit([" ".join(skillsSet)])
+    try:
+        skillsSet=[]
+        for skill in skills:
+            skill=skill.replace(" ","")
+            skillsSet.append(skill)
+        vectorizer = CountVectorizer(tokenizer=lambda txt: txt.split())
+        vocabulary = vectorizer.fit([" ".join(skillsSet)])
 
-    # print(vocabulary.get_feature_names())
-    return vectorizer
+        # print(vocabulary.get_feature_names())
+        return vectorizer
+    except ValueError:
+        print("Value Error :",sys.exc_info()[0])
+        raise
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        raise
 
 
 def removePunctuation(s):
-    newS=""
-    punctuations = '''!()|-[]{};:'"\,<>./?@$%^&_~'''
-    for i in s:
-        if(i not in punctuations):
-            newS=newS+i
-    return newS
+    try:
+        newS=""
+        punctuations = '''!()|-[]{};:'"\,<>./?@$%^&_~'''
+        for i in s:
+            if(i not in punctuations):
+                newS=newS+i
+        return newS
+    except ValueError:
+        print("Value Error :",sys.exc_info()[0])
+        return ""
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        return ""
 
 def readCategory():
-    dictCat={}
-    idx=0
-    data=pd.read_csv("./Datasets/category.csv")
-    category=data["category"].tolist()
-    distinct_category=list(set(category))
-    distinct_category.sort()
-    for i in distinct_category:
-        dictCat[i]=idx
-        idx=idx+1
-    print(dictCat)
-    return distinct_category,dictCat
+    try:
+        dictCat={}
+        idx=0
+        data=pd.read_csv("./Datasets/category.csv")
+        category=data["category"].tolist()
+        distinct_category=list(set(category))
+        distinct_category.sort()
+        for i in distinct_category:
+            dictCat[i]=idx
+            idx=idx+1
+        print(dictCat)
+        return distinct_category,dictCat
+    except ValueError:
+        print("Value Error :",sys.exc_info()[0])
+        return [],{}
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        return [],{}
 
 def cleanSKillColumn(skills):
-  cleaned=[]
-  for skill in skills:
-    temp=skill.replace(","," ").replace("/"," ").replace("."," ").replace(" ","").lower()
-    cleaned.append(temp)
-  return cleaned
+    try:
+        cleaned=[]
+        for skill in skills:
+            temp=skill.replace(","," ").replace("/"," ").replace("."," ").replace(" ","").lower()
+            cleaned.append(temp)
+        return cleaned
+    except ValueError:
+        print("Value Error :",sys.exc_info()[0])
+        return []
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        return []
 
 def getMatrixInput(skills,test_cat,dictCategory,vectorizer):
   mat=[]
@@ -91,35 +120,49 @@ def inverse(i,dictCategory):
       return key
 
 def trainKnn():
-    category, dictCategory = readCategory()
-    skillSet = getSkillSet()
-    vectorizer = getVectorizer(skillSet)
-    data = pd.read_csv("./Datasets/jobs_skills.csv")
-    X, Y = getMatrixInput(data["skills"].tolist(), data["category"].tolist(), dictCategory, vectorizer)
-    X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, shuffle=True)
-    knn = KNeighborsClassifier(n_neighbors=9)
-    knn.fit(X_train, y_train)
-    joblib.dump(knn, './models/knnClassifier.pkl')
+    try:
+        category, dictCategory = readCategory()
+        skillSet = getSkillSet()
+        vectorizer = getVectorizer(skillSet)
+        data = pd.read_csv("./Datasets/jobs_skills.csv")
+        X, Y = getMatrixInput(data["skills"].tolist(), data["category"].tolist(), dictCategory, vectorizer)
+        X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, shuffle=True)
+        knn = KNeighborsClassifier(n_neighbors=9)
+        knn.fit(X_train, y_train)
+        joblib.dump(knn, './models/knnClassifier.pkl')
+    except ValueError:
+        print("Value Error :",sys.exc_info()[0])
+        raise
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        raise
 
 def getClassification(skills):
-    dictEncodedCat,Cat=getStoredEncodedClasses()
-    data = pd.read_csv("./Datasets/jobs_skills.csv")
-    knn=joblib.load("./models/knnClassifier.pkl")
-    skillSet = getSkillSet()
-    vectorizer=getVectorizer(skillSet)
-    array = cleanSKillColumn(skills)
-    vect = vectorizer.transform([" ".join(array)]).toarray()
-    ans = knn.predict(vect)
-    print(ans)
-    dist, ind = knn.kneighbors(vect)
-    cat_list=[]
-    # print(dist[0])
+    try:
+        dictEncodedCat,Cat=getStoredEncodedClasses()
+        data = pd.read_csv("./Datasets/jobs_skills.csv")
+        knn=joblib.load("./models/knnClassifier.pkl")
+        skillSet = getSkillSet()
+        vectorizer=getVectorizer(skillSet)
+        array = cleanSKillColumn(skills)
+        vect = vectorizer.transform([" ".join(array)]).toarray()
+        ans = knn.predict(vect)
+        # print(ans)
+        dist, ind = knn.kneighbors(vect)
+        cat_list=[]
 
-    for i in range(0,3):
-        print(i,Cat[ind[0][i]])
-        cat_list.append(Cat[ind[0][i]].replace("Jobs","Profile"))
-    print(dictEncodedCat[ans[0]])
-    cat_list.append(dictEncodedCat[ans[0]].replace("Jobs","Profile"))
-    return list(set(cat_list))
+        for i in range(0,3):
+            # print(i,Cat[ind[0][i]])
+            cat_list.append(Cat[ind[0][i]].replace("Jobs","Profile"))
+        # print(dictEncodedCat[ans[0]])
+        cat_list.append(dictEncodedCat[ans[0]].replace("Jobs","Profile"))
+        return list(set(cat_list))
+    except ValueError:
+        print("Value Error :",sys.exc_info()[0])
+        return []
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        return []
 
 
+# print(getClassification(["reactjs","javascript","python","github","C++"]))

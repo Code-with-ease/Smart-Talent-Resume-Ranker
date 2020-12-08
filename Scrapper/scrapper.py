@@ -1098,25 +1098,31 @@ def insertCategory(category):
         writer = csv.DictWriter(csvfile, fieldnames=fields)
         writer.writerows(data)
 
+try:
+    category_data=pd.read_csv("category.csv")
 
-category_data=pd.read_csv("category.csv")
+    category_parsed=category_data["category"].tolist()
 
-category_parsed=category_data["category"].tolist()
-
-jobs_lists=jobs_list.reverse()
-for category in jobs_list:
-    if category not in category_parsed:
-        link2=link+convertCategory(category)
-        print("Parsing for",category)
-        print(link2)
-        html=getWebpage(link2)
-        jobs_links=extractJobLinks(html)
-        error=parseLinks(jobs_links,category)
-        if(error==-1):
-            print("ERROR... Breaking..")
-        insertCategory(category)
-        print("------------ Done parsing -------- ", category)
-        time.sleep(5)
+    jobs_lists=jobs_list.reverse()
+    for category in jobs_list:
+        if category not in category_parsed:
+            link2=link+convertCategory(category)
+            print("Parsing for",category)
+            print(link2)
+            html=getWebpage(link2)
+            jobs_links=extractJobLinks(html)
+            error=parseLinks(jobs_links,category)
+            if(error==-1):
+                print("ERROR... Breaking..")
+            insertCategory(category)
+            print("------------ Done parsing -------- ", category)
+            time.sleep(5)
+except ValueError:
+    print("Value Error :", sys.exc_info()[0])
+    raise
+except:
+    print("Unexpected error:", sys.exc_info()[0])
+    raise
 
 
 
