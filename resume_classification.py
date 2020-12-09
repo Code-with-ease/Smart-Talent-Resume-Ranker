@@ -56,7 +56,7 @@ def readCategory():
             dictCat[i]=idx
             idx=idx+1
         # ... Dict category has the format ==> {"software engineer jobs" -> 57}
-        
+
         return distinct_category,dictCat
     except ValueError:
         print("Value Error :",sys.exc_info()[0])
