@@ -12,9 +12,11 @@ def getVectorizer(skills):
         for skill in skills:
             skill=skill.replace(" ","")
             skillsSet.append(skill)
-        vectorizer = CountVectorizer(tokenizer=lambda txt: txt.split())
-        vocabulary = vectorizer.fit([" ".join(skillsSet)])
 
+        # ... skillSet=["machinelearning","java","c++","nodejs"]
+        vectorizer = CountVectorizer(tokenizer=lambda txt: txt.split())
+        # ... Joined skills string  = "machinelearning java c++ nodejs"
+        vocabulary = vectorizer.fit([" ".join(skillsSet)])
         # print(vocabulary.get_feature_names())
         return vectorizer
     except ValueError:
@@ -40,6 +42,8 @@ def removePunctuation(s):
         print("Unexpected error:", sys.exc_info()[0])
         return ""
 
+
+
 def readCategory():
     try:
         dictCat={}
@@ -51,7 +55,8 @@ def readCategory():
         for i in distinct_category:
             dictCat[i]=idx
             idx=idx+1
-        print(dictCat)
+        # ... Dict category has the format ==> {"software engineer jobs" -> 57}
+        
         return distinct_category,dictCat
     except ValueError:
         print("Value Error :",sys.exc_info()[0])
@@ -94,6 +99,8 @@ def getStoredEncodedClasses():
     dict={}
     for idx in range(0,len(cat)):
         dict[enc_cat[idx]]=cat[idx]
+    # ... dict = {57 -> "Software Engineer Jobs"}
+    # ... cat = ["Softeare enginerr jobs" ,"Softeare enginerr jobs","Java jobs"]
     return dict,cat
 
 def getSkillSet():
@@ -125,7 +132,15 @@ def trainKnn():
         skillSet = getSkillSet()
         vectorizer = getVectorizer(skillSet)
         data = pd.read_csv("./Datasets/jobs_skills.csv")
+
         X, Y = getMatrixInput(data["skills"].tolist(), data["category"].tolist(), dictCategory, vectorizer)
+
+        # ... X=[
+        #     [1,1,1,1,1,1],
+        #     [1,0,1,0,1,1]
+        # ]
+        # ... Y=[57,40]
+
         X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, shuffle=True)
         knn = KNeighborsClassifier(n_neighbors=9)
         knn.fit(X_train, y_train)
@@ -140,7 +155,7 @@ def trainKnn():
 def getClassification(skills):
     try:
         dictEncodedCat,Cat=getStoredEncodedClasses()
-        data = pd.read_csv("./Datasets/jobs_skills.csv")
+        # ... dictEncodedCat={57 -> "Software Engineer Jobs"}
         knn=joblib.load("./models/knnClassifier.pkl")
         skillSet = getSkillSet()
         vectorizer=getVectorizer(skillSet)
@@ -165,4 +180,4 @@ def getClassification(skills):
         return []
 
 
-# print(getClassification(["reactjs","javascript","python","github","C++"]))
+print(getClassification(["reactjs","javascript","python","C++"]))
