@@ -15,6 +15,19 @@ def insert_resume(client,details):
   resume_id = resume_collection.insert_one(details).inserted_id
   return resume_id
 
+
+def insertIntoCategoryCollection(dict):
+  client=connect_db()
+  data_arr = []
+  for key, value in dict.items():
+    temp = {}
+    temp["category"] = key
+    temp["encoded_value"] = value
+    data_arr.append(temp)
+  db=client["Resume-parser"]
+  category_collection=db.categories
+  category_collection.insert_many(data_arr)
+
 def insert_jd(client,details):
   db = client["Resume-parser"]
   jd_collection = db.jobs

@@ -4,7 +4,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.neighbors import KNeighborsClassifier
 import joblib
 import sys
-
+from database_functionalities import insertIntoCategoryCollection
 
 def getVectorizer(skills):
     try:
@@ -56,7 +56,8 @@ def readCategory():
             dictCat[i]=idx
             idx=idx+1
         # ... Dict category has the format ==> {"software engineer jobs" -> 57}
-
+        #To insert the category into category collection uncomment the below line.. ..
+        # insertIntoCategoryCollection(dictCat)
         return distinct_category,dictCat
     except ValueError:
         print("Value Error :",sys.exc_info()[0])
@@ -121,36 +122,33 @@ def getEncodedCat(test_cat,dictCategory):
         arr.append(dictCategory[i])
     return arr
 
-def inverse(i,dictCategory):
-  for key,value in dictCategory.items():
-    if(value==i):
-      return key
 
-def trainKnn():
-    try:
-        category, dictCategory = readCategory()
-        skillSet = getSkillSet()
-        vectorizer = getVectorizer(skillSet)
-        data = pd.read_csv("./Datasets/jobs_skills.csv")
-
-        X, Y = getMatrixInput(data["skills"].tolist(), data["category"].tolist(), dictCategory, vectorizer)
-
-        # ... X=[
-        #     [1,1,1,1,1,1],
-        #     [1,0,1,0,1,1]
-        # ]
-        # ... Y=[57,40]
-
-        X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, shuffle=True)
-        knn = KNeighborsClassifier(n_neighbors=9)
-        knn.fit(X_train, y_train)
-        joblib.dump(knn, './models/knnClassifier.pkl')
-    except ValueError:
-        print("Value Error :",sys.exc_info()[0])
-        raise
-    except:
-        print("Unexpected error:", sys.exc_info()[0])
-        raise
+# def trainKnn():
+#     try:
+#         category, dictCategory = readCategory()
+#         skillSet = getSkillSet()
+#         vectorizer = getVectorizer(skillSet)
+#         data = pd.read_csv("./Datasets/jobs_skills.csv")
+#
+#         X, Y = getMatrixInput(data["skills"].tolist(), data["category"].tolist(), dictCategory, vectorizer)
+#
+#         # ... X=[
+#         #     [1,1,1,1,1,1],
+#         #     [1,0,1,0,1,1]
+#         # ]
+#         # ... Y=[57,40]
+#
+#         X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.3, shuffle=True)
+#         knn = KNeighborsClassifier(n_neighbors=9)
+#         knn.fit(X, Y)
+#         joblib.dump(knn, './models/knnClassifier.pkl')
+#
+#     except ValueError:
+#         print("Value Error :",sys.exc_info()[0])
+#         raise
+#     except:
+#         print("Unexpected error:", sys.exc_info()[0])
+#         raise
 
 def getClassification(skills):
     try:
@@ -180,4 +178,4 @@ def getClassification(skills):
         return []
 
 
-print(getClassification(["reactjs","javascript","python","C++"]))
+# print(getClassification(["reactjs","javascript","python","C++"]))

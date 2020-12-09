@@ -200,7 +200,7 @@ def getResumeRanking(jd_name):
         raise
 
 
-getResumeRanking("jd02.pdf")
+getResumeRanking("jd05.pdf")
 
 
 
