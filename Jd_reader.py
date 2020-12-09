@@ -187,8 +187,8 @@ def parseJd(filename,insert=1):
     except:
         print("Unexpected error:", sys.exc_info()[0])
         raise
-
-parseJd("jd02.pdf",0)
+if __name__ == "__main__":
+    parseJd("jd02.pdf",0)
 
 
 

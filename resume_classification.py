@@ -177,5 +177,5 @@ def getClassification(skills):
         print("Unexpected error:", sys.exc_info()[0])
         return []
 
-
-# print(getClassification(["reactjs","javascript","python","C++"]))
+if __name__ == "__main__":
+    print(getClassification(["reactjs","javascript","python","C++"]))

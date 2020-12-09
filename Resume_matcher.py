@@ -199,8 +199,8 @@ def getResumeRanking(jd_name):
         print("Unexpected error:", sys.exc_info()[0])
         raise
 
-
-getResumeRanking("jd05.pdf")
+if __name__ == "__main__":
+    getResumeRanking("jd02.pdf")
 
 
 
