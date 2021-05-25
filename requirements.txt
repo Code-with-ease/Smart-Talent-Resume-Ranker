@@ -10,3 +10,6 @@ sklearn==0.0
 textract==1.6.3
 Unidecode==1.1.1
 tabulate==0.8.9
+selenium==3.141.0
+beautifulsoup4==4.8.0
+joblib==1.0.1
