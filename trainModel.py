@@ -1,6 +1,7 @@
 import pandas as pd
 import json
 import warnings
+
 warnings.filterwarnings('ignore')
 import re
 import nltk
@@ -15,18 +16,19 @@ from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.neighbors import KNeighborsClassifier
 
+
 def cleanResume(resumeText):
     resumeText = re.sub('[%s]' % re.escape("""!"$%&'()*,-/:;<=>?@[\]^_`{|}~"""), ' ', resumeText)  # remove punctuations
     resumeText = re.sub(r'[^\x00-\x7f]', r' ', resumeText)
     resumeText = re.sub('\s+', ' ', resumeText)  # remove extra whitespace
     return resumeText
 
-def getData():
 
-  resumeDataSet = pd.read_csv('Datasets/new_dataset_of_resume_skills1.csv')
-  resumeDataSet['cleaned_resume_skills'] = ''
-  resumeDataSet['cleaned_resume_skills'] = resumeDataSet.Resume.apply(lambda x: cleanResume(x))
-  return resumeDataSet
+def getData():
+    resumeDataSet = pd.read_csv('Datasets/new_dataset_of_resume_skills1.csv')
+    resumeDataSet['cleaned_resume_skills'] = ''
+    resumeDataSet['cleaned_resume_skills'] = resumeDataSet.Resume.apply(lambda x: cleanResume(x))
+    return resumeDataSet
 
 
 def encoding(resumeDataSet):
@@ -51,8 +53,9 @@ def trainModel(X, Y):
     model = KNeighborsClassifier(n_neighbors=10).fit(X, Y)
     joblib.dump(model, 'models/knn.pkl')
 
-def printAccuracy(x_test,y_test):
-    model =joblib.load("models/knn.pkl")
+
+def printAccuracy(x_test, y_test):
+    model = joblib.load("models/knn.pkl")
     print('Accuracy of KNN :- {:.2f}'.format(model.score(x_test, y_test)))
 
 
@@ -78,5 +81,4 @@ if __name__ == "__main__":
     # trainModel(wordFeatures, reqTarget)
 
     x_train, x_test, y_train, y_test = train_test_split(wordFeatures, reqTarget, random_state=4, test_size=0.25)
-    printAccuracy(x_test,y_test)
-
+    printAccuracy(x_test, y_test)
