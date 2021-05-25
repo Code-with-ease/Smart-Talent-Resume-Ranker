@@ -178,4 +178,4 @@ def getClassification(skills):
         return []
 
 if __name__ == "__main__":
-    print(getClassification(["reactjs","javascript","python","C++"]))
+    print(getClassification(["python","C++","machine learning","golang"]))

@@ -7,7 +7,7 @@ import sys
 
 def connect_db():
     try:
-        client = MongoClient('mongodb+srv://admin:admin@cluster0.ekv0t.mongodb.net/Resume-parser?retryWrites=true&w=majority')
+        client = MongoClient('mongodb+srv://admin:admin@cluster0.ekv0t.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
         return client
     except ValueError:
         print("Value Error :",sys.exc_info()[0])
@@ -200,7 +200,7 @@ def getResumeRanking(jd_name):
         raise
 
 if __name__ == "__main__":
-    getResumeRanking("jd02.pdf")
+    getResumeRanking("jd05.pdf")
 
 
 
