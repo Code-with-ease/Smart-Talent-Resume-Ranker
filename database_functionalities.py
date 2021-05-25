@@ -142,8 +142,8 @@ def find_resumes_by_skill(client,required_skill=[],one_of_skill=[]):
 # resume_id = insert_resume(details)
 client = connect_db()
 # find resume by email id
-email_searched_resumes = find_resume_by_details(client,{"email":"an431999@gmail.com"})
-print(email_searched_resumes)
+# email_searched_resumes = find_resume_by_details(client,{"email":"an431999@gmail.com"})
+# print(email_searched_resumes)
 
 # required + one of the following skills case
 # y = find_resume_by_skill(required_skill = ['nodejs'],one_of_skill=['reactjs','angular','vuejs'])
